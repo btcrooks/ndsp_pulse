@@ -4,7 +4,7 @@
 
 Pulse is a simple VST plugin designed to calculate delay and reverb timings based on your DAW's tempo or a manually set BPM.
 
-Pulse is built using JUCE and is available as a stereo insert plugin. The source code and pre-built binaries are hosted on this GitHub repository.
+Pulse is built using React & JUCE WebViewComponent and is available as a stereo insert plugin. The source code and pre-built binaries are hosted on this GitHub repository.
 
 ## Artwork
 

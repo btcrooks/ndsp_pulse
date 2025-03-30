@@ -70,12 +70,15 @@ const calculateReverb = (size: string, preDelayTime: number) => {
   return sizes[size as keyof typeof sizes];
 };
 
+// TODO: look into having advanced features to return:
+// - fixed floating point + custom value
+// - full floating point
 const formatValue = (value: number, unit: Unit) => {
   let formattedValue;
   if (unit === "s") {
-    formattedValue = `${parseFloat((value / 1000).toFixed(2))} s`;
+    formattedValue = parseFloat((value / 1000).toFixed(2));
   } else {
-    formattedValue = `${parseFloat(value.toFixed(2))} ms`;
+    formattedValue = parseFloat(value.toFixed(2));
   }
   return formattedValue;
 };
@@ -89,10 +92,31 @@ const reverbSizeDisplay: Record<string, string> = {
 };
 
 function App() {
-  const [bpm, setBpm] = useState<number>(120);
-  const [unit, setUnit] = useState<Unit>("s");
+  const [bpm, setBpm] = useState<number>(() => {
+    const savedBpm = localStorage.getItem("pulse-bpm");
+    return savedBpm ? Number(savedBpm) : 120;
+  });
+
+  const [unit, setUnit] = useState<Unit>(() => {
+    const savedUnit = localStorage.getItem("pulse-unit");
+    return savedUnit === "ms" || savedUnit === "s" ? savedUnit : "s";
+  });
+
+  // Update localStorage when values change
+  React.useEffect(() => {
+    localStorage.setItem("pulse-bpm", bpm.toString());
+  }, [bpm]);
+
+  React.useEffect(() => {
+    localStorage.setItem("pulse-unit", unit);
+  }, [unit]);
   const delayTimes = calculateDelay(bpm);
   const reverbSizes = ["cathedral", "hall", "large", "medium", "small"];
+  const displayUnit = (
+    <>
+      <span className="text-gray-400"> {unit}</span>
+    </>
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white p-8">
@@ -155,12 +179,17 @@ function App() {
                     {Object.entries(delayTimes).map(([note, time]) => (
                       <tr key={note} className="border-b border-gray-700">
                         <td className="py-3 px-4">{note}</td>
-                        <td className="py-3 px-4">{formatValue(time, unit)}</td>
+                        <td className="py-3 px-4">
+                          {formatValue(time, unit)}
+                          {displayUnit}
+                        </td>
                         <td className="py-3 px-4">
                           {formatValue(time * 1.5, unit)}
+                          {displayUnit}
                         </td>
                         <td className="py-3 px-4">
                           {formatValue((time * 2) / 3, unit)}
+                          {displayUnit}
                         </td>
                       </tr>
                     ))}
