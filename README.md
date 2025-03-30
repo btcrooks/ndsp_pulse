@@ -2,14 +2,13 @@
 
 # Pulse - Delay and Reverb Calculator
 
-Pulse is a simple VST plugin designed to calculate delay and reverb timings based on your DAW's tempo or a manually set BPM. It provides a clear, table-based interface displaying precise values for delay (note values, dotted, triplets) and reverb (pre-delay, decay, total time), with options to toggle between milliseconds and seconds. Perfect for producers and engineers who need quick, tempo-synced effect settings without the clutter of modern buzzwords.
+Pulse is a simple VST plugin designed to calculate delay and reverb timings based on your DAW's tempo or a manually set BPM.
 
 Pulse is built using JUCE and is available as a stereo insert plugin. The source code and pre-built binaries are hosted on this GitHub repository.
 
 ## Artwork
 
-![Pulse VST Screenshot](assets/pulse-screenshot.png)  
-\_Placeholder: A screenshot of the Pulse UI will be added here once available.\_G
+![Pulse VST Screenshot](assets/pulse-screenshot.png)
 
 ## Installation Instructions
 
@@ -52,10 +51,16 @@ To build Pulse yourself:
    - Xcode (Mac) or Visual Studio (Windows).
    - Projucer (included with JUCE).
 2. **Steps**:
-   - Clone this repository: `git clone https://github.com/yourusername/pulse.git`.
-   - Open `Pulse.jucer` in Projucer.
-   - Save and export to your IDE (Xcode or Visual Studio).
-   - Build the VST target.
+   - Clone this repository:
+
+```sh
+git clone https://github.com/yourusername/pulse.git
+```
+
+- Open `Pulse.jucer` in Projucer.
+- Save and export to your IDE (Xcode or Visual Studio).
+- Build the VST target.
+
 3. **Output**: Find the `.vst` (Mac) or `.dll` (Windows) in the build folder.
 
 ## Additional Documentation
@@ -92,12 +97,3 @@ Want to improve Pulse?
 - Fork the repo, make your changes, and submit a pull request.
 - Follow JUCE coding conventions.
 - Suggestions? Open an issue with your idea.
-
-## Contact
-
-- GitHub: [yourusername](https://github.com/yourusername)
-- Email: your.email@example.com (optional, add if desired)
-
----
-
-_Note_: Replace `yourusername` with your GitHub username and update paths or details as needed once the repo is live.
