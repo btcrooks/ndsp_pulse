@@ -4,7 +4,9 @@ import React, { useState } from "react";
 import { Sliders } from "lucide-react";
 import * as Sentry from "@sentry/react";
 
-type Unit = "ms" | "s" | "manual";
+type Unit = "ms" | "s";
+const enableDelay = true;
+const enableReverb = false;
 
 // Delay calculation functions
 const calculateDelay = (bpm: number) => {
@@ -69,8 +71,13 @@ const calculateReverb = (size: string, preDelayTime: number) => {
 };
 
 const formatValue = (value: number, unit: Unit) => {
-  if (unit === "s") return `${(value / 1000).toFixed(3)} s`;
-  return `${value.toFixed(3)} ms`;
+  let formattedValue;
+  if (unit === "s") {
+    formattedValue = `${parseFloat((value / 1000).toFixed(2))} s`;
+  } else {
+    formattedValue = `${parseFloat(value.toFixed(2))} ms`;
+  }
+  return formattedValue;
 };
 
 const reverbSizeDisplay: Record<string, string> = {
@@ -83,8 +90,7 @@ const reverbSizeDisplay: Record<string, string> = {
 
 function App() {
   const [bpm, setBpm] = useState<number>(120);
-  const [unit, setUnit] = useState<Unit>("ms");
-  const [manualPreDelay, setManualPreDelay] = useState<number>(31.25);
+  const [unit, setUnit] = useState<Unit>("s");
   const delayTimes = calculateDelay(bpm);
   const reverbSizes = ["cathedral", "hall", "large", "medium", "small"];
 
@@ -118,62 +124,57 @@ function App() {
               onChange={(e) => setUnit(e.target.value as Unit)}
               className="bg-gray-700 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
-              <option value="ms">Milliseconds</option>
               <option value="s">Seconds</option>
-              <option value="manual">Manual Pre-delay</option>
+              <option value="ms">Milliseconds</option>
+              {/* <option value="manual">Manual Pre-delay</option> */}
             </select>
           </div>
-
-          {unit === "manual" && (
-            <div>
-              <label className="block mb-2 text-lg">Manual Pre-delay</label>
-              <input
-                type="number"
-                value={manualPreDelay}
-                onChange={(e) =>
-                  setManualPreDelay(Math.max(0, Number(e.target.value)))
-                }
-                className="bg-gray-700 text-white px-4 py-2 rounded-lg w-32 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                min="0"
-                step="0.001"
-              />
-            </div>
-          )}
         </div>
 
-        <div className="grid gap-8">
-          <div className="bg-gray-800 rounded-xl p-6 shadow-xl">
-            <h2 className="text-2xl font-semibold mb-4 text-blue-400">
-              Delay Times
-            </h2>
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-gray-700">
-                    <th className="text-left py-3 px-4">Note Value</th>
-                    <th className="text-left py-3 px-4">Notes</th>
-                    <th className="text-left py-3 px-4">Dotted</th>
-                    <th className="text-left py-3 px-4">Triplets</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.entries(delayTimes).map(([note, time]) => (
-                    <tr key={note} className="border-b border-gray-700">
-                      <td className="py-3 px-4">{note}</td>
-                      <td className="py-3 px-4">{formatValue(time, unit)}</td>
-                      <td className="py-3 px-4">
-                        {formatValue(time * 1.5, unit)}
-                      </td>
-                      <td className="py-3 px-4">
-                        {formatValue((time * 2) / 3, unit)}
-                      </td>
+        {enableDelay && (
+          <div className="grid gap-8">
+            <div className="bg-gray-800 rounded-xl p-6 shadow-xl">
+              <h2 className="text-2xl font-semibold text-blue-400">
+                Delay Times
+              </h2>
+              <p className="text-sm mb-4 text-gray-400">
+                Calculates delay lengths for different note values in reference
+                to your BPM ({bpm})
+              </p>
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b border-gray-700">
+                      <th className="text-left py-3 px-4">Note Value</th>
+                      <th className="text-left py-3 px-4">Notes</th>
+                      <th className="text-left py-3 px-4">Dotted</th>
+                      <th className="text-left py-3 px-4">Triplets</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {Object.entries(delayTimes).map(([note, time]) => (
+                      <tr key={note} className="border-b border-gray-700">
+                        <td className="py-3 px-4">{note}</td>
+                        <td className="py-3 px-4">{formatValue(time, unit)}</td>
+                        <td className="py-3 px-4">
+                          {formatValue(time * 1.5, unit)}
+                        </td>
+                        <td className="py-3 px-4">
+                          {formatValue((time * 2) / 3, unit)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
-
+        )}
+        {/* TODOs:
+          - fix conditional spacing
+        */}
+        <div className="h-8" />
+        {enableReverb && (
           <div className="bg-gray-800 rounded-xl p-6 shadow-xl">
             <h2 className="text-2xl font-semibold mb-4 text-blue-400">
               Reverb Times
@@ -190,8 +191,7 @@ function App() {
                 </thead>
                 <tbody>
                   {reverbSizes.map((size) => {
-                    const preDelay =
-                      unit === "manual" ? manualPreDelay : delayTimes["1/64"];
+                    const preDelay = delayTimes["1/2"];
                     const reverb = calculateReverb(size, preDelay);
                     return (
                       <tr key={size} className="border-b border-gray-700">
@@ -212,7 +212,7 @@ function App() {
               </table>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
