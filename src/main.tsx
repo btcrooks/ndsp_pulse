@@ -4,6 +4,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
+import { asyncWithLDProvider } from "launchdarkly-react-client-sdk";
 import * as Sentry from "@sentry/react";
 
 Sentry.init({
@@ -21,8 +22,27 @@ Sentry.init({
   replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
 });
 
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>
-);
+// createRoot(document.getElementById("root")!).render(
+//   <StrictMode>
+//     <App />
+//   </StrictMode>
+// );
+
+(async () => {
+  const LDProvider = await asyncWithLDProvider({
+    clientSideID: "67e9a9f4f84f5b0aab08c6c0",
+    context: {
+      kind: "user",
+      key: "example-user-key",
+      name: "Sandy",
+    },
+  });
+
+  createRoot(document.getElementById("root")!).render(
+    <StrictMode>
+      <LDProvider>
+        <App />
+      </LDProvider>
+    </StrictMode>
+  );
+})();

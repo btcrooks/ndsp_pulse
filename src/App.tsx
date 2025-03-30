@@ -2,11 +2,10 @@
 
 import React, { useState } from "react";
 import { Sliders } from "lucide-react";
+import { useFlags } from "launchdarkly-react-client-sdk";
 import * as Sentry from "@sentry/react";
 
 type Unit = "ms" | "s";
-const enableDelay = true;
-const enableReverb = false;
 
 // Delay calculation functions
 const calculateDelay = (bpm: number) => {
@@ -92,6 +91,7 @@ const reverbSizeDisplay: Record<string, string> = {
 };
 
 function App() {
+  const { enableDelayCalculator, enableReverbCalculator } = useFlags();
   const [bpm, setBpm] = useState<number>(() => {
     const savedBpm = localStorage.getItem("pulse-bpm");
     return savedBpm ? Number(savedBpm) : 120;
@@ -106,7 +106,7 @@ function App() {
   React.useEffect(() => {
     localStorage.setItem("pulse-bpm", bpm.toString());
   }, [bpm]);
-
+  //
   React.useEffect(() => {
     localStorage.setItem("pulse-unit", unit);
   }, [unit]);
@@ -155,7 +155,7 @@ function App() {
           </div>
         </div>
 
-        {enableDelay && (
+        {enableDelayCalculator && (
           <div className="grid gap-8">
             <div className="bg-gray-800 rounded-xl p-6 shadow-xl">
               <h2 className="text-2xl font-semibold text-blue-400">
@@ -203,7 +203,7 @@ function App() {
           - fix conditional spacing
         */}
         <div className="h-8" />
-        {enableReverb && (
+        {enableReverbCalculator && (
           <div className="bg-gray-800 rounded-xl p-6 shadow-xl">
             <h2 className="text-2xl font-semibold mb-4 text-blue-400">
               Reverb Times
