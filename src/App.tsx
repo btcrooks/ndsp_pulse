@@ -214,6 +214,11 @@ function App() {
           </div>
         )}
       </div>
+      <div className="max-w-6xl mx-auto text-center">
+        <p className="center text-xs mt-8 text-gray-400">
+          Built and maintained by @CrookedPixel. All rights reserved. 🖕 Mode.
+        </p>
+      </div>
     </div>
   );
 }
