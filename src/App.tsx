@@ -91,7 +91,14 @@ const reverbSizeDisplay: Record<string, string> = {
 };
 
 function App() {
-  const { enableDelayCalculator, enableReverbCalculator } = useFlags();
+  const { delayCalculator, reverbCalculator, delayTimes: foo } = useFlags();
+
+  console.log("🚀 ~ App.tsx:96 ~ App ~ foo:", foo);
+
+  console.log("🚀 ~ App.tsx:96 ~ App ~ reverbCalculator:", reverbCalculator);
+
+  console.log("🚀 ~ App.tsx:96 ~ App ~ delayCalculator:", delayCalculator);
+
   const [bpm, setBpm] = useState<number>(() => {
     const savedBpm = localStorage.getItem("pulse-bpm");
     return savedBpm ? Number(savedBpm) : 120;
@@ -155,7 +162,7 @@ function App() {
           </div>
         </div>
 
-        {enableDelayCalculator && (
+        {delayCalculator && (
           <div className="grid gap-8">
             <div className="bg-gray-800 rounded-xl p-6 shadow-xl">
               <h2 className="text-2xl font-semibold text-blue-400">
@@ -203,7 +210,7 @@ function App() {
           - fix conditional spacing
         */}
         <div className="h-8" />
-        {enableReverbCalculator && (
+        {reverbCalculator && (
           <div className="bg-gray-800 rounded-xl p-6 shadow-xl">
             <h2 className="text-2xl font-semibold mb-4 text-blue-400">
               Reverb Times

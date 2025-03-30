@@ -38,6 +38,8 @@ Sentry.init({
     },
   });
 
+  // TODO
+  // add locating skeleton while LD is loading
   createRoot(document.getElementById("root")!).render(
     <StrictMode>
       <LDProvider>
